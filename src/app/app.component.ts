@@ -36,22 +36,27 @@ export class AppComponent implements OnInit {
   }
 
   convert() {
-    this.converterService.convert(this.converterForm.value).subscribe({
-      next: value => {
-        if(value){
-          let result:any = value;
-          let rates = Object.entries(result.rates).map(([code, value]) => ({ code, value }));
-          this.toValue = Number(rates[0].value);
+    if (this.converterForm.value.from != this.converterForm.value.to) {
+      this.converterService.convert(this.converterForm.value).subscribe({
+        next: value => {
+          if (value) {
+            let result: any = value;
+            let rates = Object.entries(result.rates).map(([code, value]) => ({ code, value }));
+            this.toValue = Number(rates[0].value);
+          }
+        },
+        error: e => {
+          console.log("Error => ", e)
+          alert(e.message);
         }
-             },
-      error: e => {
-        console.log("Error => ",e)
-        alert(e.message);
-      }
-    })
+      })
+    } else {
+      this.toValue = Number(this.converterForm.value.amount);
+    }
+
   }
 
-  clear(){
+  clear() {
     this.converterForm.reset();
     this.toValue = 0;
   }
